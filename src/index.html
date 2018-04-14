@@ -37,15 +37,53 @@
               <span class="oi oi-arrow-bottom list-action" ng-click="switchPosition($index, $index+1)"></span>
               <span class="oi oi-arrow-top list-action" ng-click="switchPosition($index, $index-1)"></span>
             </div>
-            <span class="oi oi-trash list-action" ng-click="deletePoint($index)"></span>
+            <div>
+              <span class="oi oi-trash list-action" ng-click="deletePoint($index)"></span>
+              <span class="oi oi-pencil list-action" ng-click="startEditingPoint(item,$index)"></span>
+            </div>
           </li>
         </ul>
 
       </div>
       <div class="col-md-8 order-md-1">
+
+        <div ng-show="editing">
+          <h4 class="mb-3">Édition d'un point d'interêt</h4>
+
+          <form name="editPointForm" novalidate ng-submit="editing=false">
+
+            <div class="mb-3" ng-class="{ 'was-validated': (editPoint.title!='') }">
+              <label for="username">Nom</label>
+              <input type="text" class="form-control" id="name" placeholder="Nom" required ng-model="editPoint.title">
+              <div class="invalid-feedback" style="width: 100%;">
+                Un nom est nécessaire.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (editPoint.coords.latitude!='') }">
+                <label for="latitude">Latitude</label>
+                <input type="number" step="0.00001" class="form-control" id="latitude" placeholder="48.76707" value="" required ng-model="editPoint.coords.latitude">
+                <div class="invalid-feedback">
+                  Une latitude valide est nécessaire.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (editPoint.coords.longitude!='') }">
+                <label for="longitude">Longitude</label>
+                <input type="number" step="0.00001" class="form-control" id="longitude" placeholder="7.258699" value="" required ng-model="editPoint.coords.longitude">
+                <div class="invalid-feedback">
+                  Une longitude valide est nécessaire.
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="editPointForm.$invalid">Éditer le point d'interêt</button>
+          </form>
+          <hr class="mb-4">
+        </div>
+
         <h4 class="mb-3">Ajout d'un point d'interêt</h4>
 
-        <form  name="addPointForm" novalidate ng-submit="addPoint()">
+        <form name="addPointForm" novalidate ng-submit="addPoint()">
 
           <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
             <label for="username">Nom</label>
@@ -71,7 +109,7 @@
               </div>
             </div>
           </div>
-          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="addPointForm.$invalid">Ajout d'un point d'interêt</button>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="addPointForm.$invalid">Ajouter un point d'interêt</button>
         </form>
 
         <hr class="mb-4">
@@ -81,7 +119,7 @@
 
 
           <hr class="mb-4">
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Ajout d'un tracé GPS</button>
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Ajouter un tracé GPS</button>
         </form>
       </div>
     </div>

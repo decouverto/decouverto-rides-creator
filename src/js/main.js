@@ -35,8 +35,13 @@ angular.module('UI', ['ngNotie'])
         }
         $scope.deletePoint = function (key) {
             notie.confirm('Êtes-vous sûre de vouloir le supprimer ?', 'Supprimer', 'Annuler', function() {
+                $scope.editing=false;
                 $scope.points.splice(key,1);
                 $scope.$apply();
             });
+        }
+        $scope.startEditingPoint = function (item, key) {
+            $scope.editPoint = item;
+            $scope.editing=true;
         }
 }])
