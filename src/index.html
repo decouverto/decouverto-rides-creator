@@ -25,13 +25,13 @@
       <div class="col-md-4 order-md-2 mb-4">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-muted">Points</span>
-          <span class="badge badge-secondary badge-pill">1</span>
+          <span class="badge badge-secondary badge-pill">{{points.length}}</span>
         </h4>
         <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <li class="list-group-item d-flex justify-content-between lh-condensed" ng-repeat="item in points">
             <div>
-              <h6 class="my-0">Product name</h6>
-              <small class="text-muted">n°1</small>
+              <h6 class="my-0">{{item.title}}</h6>
+              <small class="text-muted">n°{{$index + 1}}</small>
             </div>
             <div>
               <span class="oi oi-arrow-bottom list-action"></span>
