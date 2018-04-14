@@ -1,3 +1,10 @@
+.list-action, .preview-image {
+    cursor: pointer;
+}
+
 .list-action:hover {
-    color: #6c757d
+    color: #6c757d;
+}
+.preview-image:hover {
+    text-decoration: underline;
 }

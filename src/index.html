@@ -27,6 +27,7 @@
           <span class="text-muted">Points</span>
           <span class="badge badge-secondary badge-pill">{{points.length}}</span>
         </h4>
+        <p ng-hide="points.length">Aucune point n'a été créé.</p>
         <ul class="list-group mb-3">
           <li class="list-group-item d-flex justify-content-between lh-condensed" ng-repeat="item in points">
             <div>
@@ -92,7 +93,6 @@
               Un nom est nécessaire.
             </div>
           </div>
-
           <div class="row">
             <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (point.coords.latitude!='') }">
               <label for="latitude">Latitude</label>
@@ -109,6 +109,14 @@
               </div>
             </div>
           </div>
+          <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
+              <label>Illustrations</label>
+              <ul>
+                <li ng-repeat="item in point.images"><b ng-click="showImage(item.path)">{{item.path | filename }}</b> {{item.width}}x{{item.height}}</li>  
+              </ul>
+              <p ng-hide="point.images.length"><i>Aucune illustration n'a été sélectionné.</i></p>
+              <button type="button" class="btn btn-secondary" ng-click="addImages(point)">Sélectionner des illustrations</button>
+            </div>
           <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="addPointForm.$invalid">Ajouter un point d'interêt</button>
         </form>
 
