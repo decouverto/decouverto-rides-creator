@@ -34,8 +34,8 @@
               <small class="text-muted">n°{{$index + 1}}</small>
             </div>
             <div>
-              <span class="oi oi-arrow-bottom list-action"></span>
-              <span class="oi oi-arrow-top list-action"></span>
+              <span class="oi oi-arrow-bottom list-action" ng-click="switchPosition($index, $index+1)"></span>
+              <span class="oi oi-arrow-top list-action" ng-click="switchPosition($index, $index-1)"></span>
             </div>
             <span class="oi oi-trash list-action"></span>
           </li>

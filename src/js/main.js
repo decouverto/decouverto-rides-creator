@@ -28,4 +28,9 @@ angular.module('UI', ['ngNotie'])
             }
             console.log($scope.points);
         }
+        $scope.switchPosition = function (initialK, finalK) {
+            if (finalK >= 0 && finalK < $scope.points.length) {
+                swap($scope.points, initialK, finalK);
+            } 
+        }
 }])
