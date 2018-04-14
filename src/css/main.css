@@ -1,4 +1,4 @@
-.list-action, .preview-image {
+.list-action, .preview-image, .badge-action {
     cursor: pointer;
 }
 
@@ -7,4 +7,9 @@
 }
 .preview-image:hover {
     text-decoration: underline;
+}
+.badge-action:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #bd2130;
 }

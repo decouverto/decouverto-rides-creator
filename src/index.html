@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang⁼ "fr">
-
 <head>
   <meta charset="utf-8">
   <title>Découverto: Outil de création de promenade</title>
@@ -77,6 +76,21 @@
                 </div>
               </div>
             </div>
+            <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
+                <label>Illustrations</label>
+                <ul>
+                  <li ng-repeat="item in editPoint.images">
+                    <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
+                    <span class="badge badge-pill badge-danger badge-action" ng-click="removeImage(editPoint, $item)">
+                      <span class="oi oi-minus"></span>
+                    </span>
+                  </li>
+                </ul>
+                <p ng-hide="editPoint.images.length">
+                  <i>Aucune illustration n'a été sélectionné.</i>
+                </p>
+                <button type="button" class="btn btn-secondary" ng-click="addImage(editPoint)">Sélectionner des illustrations</button>
+              </div>
             <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="editPointForm.$invalid">Éditer le point d'interêt</button>
           </form>
           <hr class="mb-4">
@@ -110,13 +124,21 @@
             </div>
           </div>
           <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
-              <label>Illustrations</label>
-              <ul>
-                <li ng-repeat="item in point.images"><b ng-click="showImage(item.path)">{{item.path | filename }}</b> {{item.width}}x{{item.height}}</li>  
-              </ul>
-              <p ng-hide="point.images.length"><i>Aucune illustration n'a été sélectionné.</i></p>
-              <button type="button" class="btn btn-secondary" ng-click="addImages(point)">Sélectionner des illustrations</button>
-            </div>
+            <label>Illustrations</label>
+            <ul>
+              <li ng-repeat="item in point.images">
+                <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
+                <span class="badge badge-pill badge-danger badge-action"
+                  ng-click="removeImage(point, $item)">
+                  <span class="oi oi-minus"></span>
+                </span>
+              </li>
+            </ul>
+            <p ng-hide="point.images.length">
+              <i>Aucune illustration n'a été sélectionné.</i>
+            </p>
+            <button type="button" class="btn btn-secondary" ng-click="addImage(point)">Sélectionner des illustrations</button>
+          </div>
           <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="addPointForm.$invalid">Ajouter un point d'interêt</button>
         </form>
 

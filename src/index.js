@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -14,6 +14,9 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    webPreferences: {
+      nativeWindowOpen: true
+    }
   });
 
   // and load the index.html of the app.
@@ -21,6 +24,21 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+    if (frameName === 'modal') {
+      // open window as modal
+      event.preventDefault()
+      Object.assign(options, {
+        title: 'Aperçu',
+        modal: true,
+        parent: mainWindow,
+        width: 1280,
+        height: 720
+      })
+      event.newGuest = new BrowserWindow(options)
+    }
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
