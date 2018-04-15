@@ -12,6 +12,7 @@ const showModal = function (html) {
 }
 const { dialog } = require('electron').remote;
 const sizeOf = require('image-size');
+const fs = require('fs');
 
 angular.module('UI', ['ngNotie'])
     .filter('filename', function () {
@@ -27,6 +28,7 @@ angular.module('UI', ['ngNotie'])
                 latitude: '',
                 longitude: ''
             },
+            sound: '',
             images: []
         }
         $scope.addPoint = function () {
@@ -37,6 +39,7 @@ angular.module('UI', ['ngNotie'])
                     latitude: '',
                     longitude: ''
                 },
+                sound: '',
                 images: []
             }
         }
@@ -86,5 +89,30 @@ angular.module('UI', ['ngNotie'])
         }
         $scope.removeImage = function (point, key) {
             point.images.splice(key, 1);
+        }
+        $scope.addSound = function (point) {
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+                title: 'Sélectionner un fichier audio',
+                buttonLabel: 'Sélectionner',
+                filters: [
+                    { name: 'Fichier audio', extensions: ['mp3'] }
+                ]
+            }, function (path) {
+                if (path.length !== 0) {
+                    fs.stat(path[0], function(err, stats) {
+                        if (err) {
+                            notie.alert(3, 'Erreur lors de la sélection.');
+                        } else {
+                            if (Math.floor(stats.size/1000000) > 5) {
+                                notie.alert(3, 'Fichier trop lourd veuillez le compresser.');
+                            } else {
+                                point.sound=path[0];
+                                $scope.$apply();
+                            }
+                        }
+                    });
+                }
+            });
         }
     }])

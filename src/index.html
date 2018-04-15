@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang⁼ "fr">
+
 <head>
   <meta charset="utf-8">
   <title>Découverto: Outil de création de promenade</title>
@@ -76,21 +77,36 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
-                <label>Illustrations</label>
-                <ul>
-                  <li ng-repeat="item in editPoint.images">
-                    <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
-                    <span class="badge badge-pill badge-danger badge-action" ng-click="removeImage(editPoint, $item)">
-                      <span class="oi oi-minus"></span>
-                    </span>
-                  </li>
-                </ul>
-                <p ng-hide="editPoint.images.length">
-                  <i>Aucune illustration n'a été sélectionné.</i>
-                </p>
-                <button type="button" class="btn btn-secondary" ng-click="addImage(editPoint)">Sélectionner des illustrations</button>
+            <div class="mb-3" ng-class="{ 'was-validated': (editPoint.sound!='') }">
+              <label for="sound">Explication audio</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <span class="oi oi-musical-note"></span>
+                  </span>
+                </div>
+                <input type="text" class="form-control" placeholder="Fichier audio" ng-model="editPoint.sound" disabled required>
+                <div class="invalid-feedback" style="width: 100%;">
+                  Un fichier audio est obligatoire.
+                </div>
               </div>
+              <button type="button" class="btn btn-secondary mt-2" ng-click="addSound(editPoint)">Sélectionner une explication audio</button>
+            </div>
+            <div class="mb-3">
+              <label>Illustrations</label>
+              <ul>
+                <li ng-repeat="item in editPoint.images">
+                  <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
+                  <span class="badge badge-pill badge-danger badge-action" ng-click="removeImage(editPoint, $item)">
+                    <span class="oi oi-minus"></span>
+                  </span>
+                </li>
+              </ul>
+              <p ng-hide="editPoint.images.length">
+                <i>Aucune illustration n'a été sélectionné.</i>
+              </p>
+              <button type="button" class="btn btn-secondary" ng-click="addImage(editPoint)">Sélectionner des illustrations</button>
+            </div>
             <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="editPointForm.$invalid">Éditer le point d'interêt</button>
           </form>
           <hr class="mb-4">
@@ -123,13 +139,27 @@
               </div>
             </div>
           </div>
-          <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
-            <label>Illustrations</label>
+          <div class="mb-3" ng-class="{ 'was-validated': (point.sound!='') }">
+            <label for="sound">Explication audio</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <span class="oi oi-musical-note"></span>
+                </span>
+              </div>
+              <input type="text" class="form-control" placeholder="Fichier audio" ng-model="point.sound" disabled required>
+              <div class="invalid-feedback" style="width: 100%;">
+                Un fichier audio est obligatoire.
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary mt-2" ng-click="addSound(point)">Sélectionner une explication audio</button>
+          </div>
+          <div class="mb-3">
+            <label>Illustrations <i>(facultatif)</i></label>
             <ul>
               <li ng-repeat="item in point.images">
                 <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
-                <span class="badge badge-pill badge-danger badge-action"
-                  ng-click="removeImage(point, $item)">
+                <span class="badge badge-pill badge-danger badge-action" ng-click="removeImage(point, $item)">
                   <span class="oi oi-minus"></span>
                 </span>
               </li>
