@@ -174,12 +174,19 @@
 
         <hr class="mb-4">
 
-        <form class="needs-validation" novalidate>
+        <form>
           <h4 class="mb-3">Ajout d'un tracé GPS</h4>
-
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <span class="oi oi-map-marker"></span>
+              </span>
+            </div>
+            <input type="text" class="form-control" placeholder="Fichier GPX" ng-model="itinerary" disabled required>
+          </div>
 
           <hr class="mb-4">
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Ajouter un tracé GPS</button>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-click="choseGPSFile()">Ajouter un tracé GPS</button>
         </form>
       </div>
     </div>

@@ -22,6 +22,7 @@ angular.module('UI', ['ngNotie'])
     })
     .controller('UICtrl', ['$scope', 'notie', function ($scope, notie) {
         $scope.points = [];
+        $scope.itinerary = '';
         $scope.point = {
             title: '',
             coords: {
@@ -100,18 +101,33 @@ angular.module('UI', ['ngNotie'])
                 ]
             }, function (path) {
                 if (path.length !== 0) {
-                    fs.stat(path[0], function(err, stats) {
+                    fs.stat(path[0], function (err, stats) {
                         if (err) {
                             notie.alert(3, 'Erreur lors de la sélection.');
                         } else {
-                            if (Math.floor(stats.size/1000000) > 5) {
+                            if (Math.floor(stats.size / 1000000) > 5) {
                                 notie.alert(3, 'Fichier trop lourd veuillez le compresser.');
                             } else {
-                                point.sound=path[0];
+                                point.sound = path[0];
                                 $scope.$apply();
                             }
                         }
                     });
+                }
+            });
+        }
+        $scope.choseGPSFile = function () {
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+                title: 'Sélectionner un fichier GPS',
+                buttonLabel: 'Sélectionner',
+                filters: [
+                    { name: 'Fichier GPS', extensions: ['gpx'] }
+                ]
+            }, function (path) {
+                if (path.length !== 0) {
+                    $scope.itinerary = path[0]
+                    $scope.$apply();
                 }
             });
         }
