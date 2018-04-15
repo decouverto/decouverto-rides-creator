@@ -12,7 +12,26 @@
 </head>
 
 <body class="bg-light" ng-app="UI" ng-controller="UICtrl">
+  <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Découverto</a>
 
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="exportDraft()"><span class="oi oi-document"></span> Enregistrer le brouillon</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="openDraft()"><span class="oi oi-folder"></span> Ouvrir un brouillon</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="previewMap()"><span class="oi oi-phone"></span> Prévisualiser</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="export()"><span class="oi oi-external-link"></span> Exporter</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <div class="container">
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="logo.jpg" alt="" width="59" height="96">
@@ -155,7 +174,9 @@
             <button type="button" class="btn btn-secondary mt-2" ng-click="addSound(point)">Sélectionner une explication audio</button>
           </div>
           <div class="mb-3">
-            <label>Illustrations <i>(facultatif)</i></label>
+            <label>Illustrations
+              <i>(facultatif)</i>
+            </label>
             <ul>
               <li ng-repeat="item in point.images">
                 <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
@@ -184,7 +205,6 @@
             </div>
             <input type="text" class="form-control" placeholder="Fichier GPX" ng-model="itinerary" disabled required>
           </div>
-
           <hr class="mb-4">
           <button class="btn btn-primary btn-lg btn-block" type="submit" ng-click="choseGPSFile()">Ajouter un tracé GPS</button>
         </form>

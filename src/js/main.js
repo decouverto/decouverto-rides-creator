@@ -69,7 +69,7 @@ angular.module('UI', ['ngNotie'])
                     { name: 'Images', extensions: ['jpg', 'png'] }
                 ]
             }, function (path) {
-                if (path.length !== 0) {
+                if (path !== undefined) {
                     sizeOf(path[0], function (err, dimensions) {
                         if (err) {
                             notie.alert(3, 'Erreur lors de la sélection.')
@@ -100,7 +100,7 @@ angular.module('UI', ['ngNotie'])
                     { name: 'Fichier audio', extensions: ['mp3'] }
                 ]
             }, function (path) {
-                if (path.length !== 0) {
+                if (path !== undefined) {
                     fs.stat(path[0], function (err, stats) {
                         if (err) {
                             notie.alert(3, 'Erreur lors de la sélection.');
@@ -125,9 +125,50 @@ angular.module('UI', ['ngNotie'])
                     { name: 'Fichier GPS', extensions: ['gpx'] }
                 ]
             }, function (path) {
-                if (path.length !== 0) {
+                if (path !== undefined) {
                     $scope.itinerary = path[0]
                     $scope.$apply();
+                }
+            });
+        }
+        $scope.openDraft = function () {
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+                title: 'Sélectionner un brouillon',
+                buttonLabel: 'Sélectionner',
+                filters: [
+                    { name: 'Fichier Découverto', extensions: ['decouverto'] }
+                ]
+            }, function (path) {
+                if (path !== undefined) {
+                    fs.readFile(path[0], 'utf8', function (err, data) {
+                        if (err) return notie.alert(3, 'Echec de la lecture du brouillon');
+                        let save = JSON.parse(data);
+                        $scope.points = save.points;
+                        $scope.itinerary = save.itinerary;
+                        $scope.$apply();
+                        notie.alert(1, 'Lecture réussite');
+                    });
+                }
+            });
+        }
+        $scope.exportDraft = function () {
+            let save = {
+                points: $scope.points,
+                itinerary: $scope.itinerary
+            };
+            dialog.showSaveDialog({
+                title: 'Sélectionner un dossier',
+                buttonLabel: 'Sélectionner',
+                filters: [
+                    { name: 'Fichier Découverto', extensions: ['decouverto'] }
+                ]
+            }, function (path) {
+                if (path !== undefined) {
+                    fs.writeFile(path, JSON.stringify(save), function (err) {
+                        if (err) return notie.alert(3, 'Echec de la sauvegarde');
+                        notie.alert(1, 'Sauvegarde réussite');
+                    });
                 }
             });
         }
