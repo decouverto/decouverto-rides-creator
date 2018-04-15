@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -8,6 +8,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let previewWindow;
+let data;
 
 const createWindow = () => {
   // Create the browser window.
@@ -39,16 +41,28 @@ const createWindow = () => {
       event.newGuest = new BrowserWindow(options)
     }
   })
+  
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+    if (previewWindow) {
+      previewWindow.close();
+    }
     mainWindow = null;
   });
 };
 
+ipcMain.on('open-preview', (event, arg) => {  
+  previewWindow = new BrowserWindow({ width: 800, height: 400 });
+  previewWindow.on('closed', () => {
+    previewWindow = null;
+  });
+  previewWindow.loadURL(`file://${__dirname}/preview.html`);
+  previewWindow.show(); 
+  data = arg;
+});
+ipcMain.on('window-opened',(event) => {  
+  event.sender.send('data', data);
+})
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

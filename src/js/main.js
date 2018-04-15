@@ -11,6 +11,7 @@ const showModal = function (html) {
     modal.document.write('<head><link rel="stylesheet" href="css/bootstrap.min.css"></head><body><div class="container"><h1>Aperçu</h1>' + html + '</div></body>')
 }
 const { dialog } = require('electron').remote;
+const { ipcRenderer } = require('electron');
 const sizeOf = require('image-size');
 const fs = require('fs');
 
@@ -170,6 +171,12 @@ angular.module('UI', ['ngNotie'])
                         notie.alert(1, 'Sauvegarde réussite');
                     });
                 }
+            });
+        }
+        $scope.previewMap = function () {
+            ipcRenderer.send('open-preview', {
+                points: $scope.points,
+                itinerary: $scope.itinerary
             });
         }
     }])
