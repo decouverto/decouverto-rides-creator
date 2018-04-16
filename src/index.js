@@ -5,11 +5,14 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
+let googleMapsKey = require('fs').readFileSync(`${__dirname}/.googlemaps`,'utf8');
+let data;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let previewWindow;
-let data;
+
 
 const createWindow = () => {
   // Create the browser window.
@@ -20,7 +23,7 @@ const createWindow = () => {
       nativeWindowOpen: true
     }
   });
-
+  
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
@@ -61,8 +64,8 @@ ipcMain.on('open-preview', (event, arg) => {
   data = arg;
 });
 ipcMain.on('window-opened',(event) => {  
-  event.sender.send('data', data);
-})
+  event.sender.send('data', { data, googleMapsKey});
+});
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

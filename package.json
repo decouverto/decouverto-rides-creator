@@ -50,6 +50,7 @@
     "angular": "^1.6.9",
     "electron-compile": "^6.4.2",
     "electron-squirrel-startup": "^1.0.0",
+    "gpx-to-points": "0.0.0",
     "image-size": "^0.6.2",
     "ng-notie": "0.0.1"
   },

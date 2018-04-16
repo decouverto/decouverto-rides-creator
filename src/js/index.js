@@ -174,9 +174,14 @@ angular.module('UI', ['ngNotie'])
             });
         }
         $scope.previewMap = function () {
-            ipcRenderer.send('open-preview', {
-                points: $scope.points,
-                itinerary: $scope.itinerary
-            });
+            if ($scope.itinerary != '') {
+                ipcRenderer.send('open-preview', {
+                    points: $scope.points,
+                    itinerary: $scope.itinerary
+                });
+            } else {
+                notie.alert(3, 'Vous devez ajouter un fichier GPX');
+            }
+            
         }
     }])
