@@ -19,6 +19,18 @@ function initMap () {
       center: center,
       zoom: 12
     });
+    let convertedPath = [];
+    itinerary.map(function (el) {
+        convertedPath.push({lat: el.latitude, lng: el.longitude});
+    });
+    let path = new google.maps.Polyline({
+      path: convertedPath,
+      geodesic: true,
+      strokeColor: '#000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+    path.setMap(map);
 }
 
 function resizeMap () {
@@ -31,10 +43,9 @@ resizeMap();
 ipcRenderer.send('window-opened')
 ipcRenderer.on('data', (event, arg) => {
     const { data, googleMapsKey } = arg;
-    console.log(data,googleMapsKey);
     GPXtoPoints(data.itinerary, function (err, results) {
         if (err) console.err(err);
-        console.log(results)
+        itinerary = results;
         let sumLat = 0;
         let sumLng = 0;
         results.forEach(function (el) {
