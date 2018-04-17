@@ -24,6 +24,8 @@ angular.module('UI', ['ngNotie'])
     .controller('UICtrl', ['$scope', 'notie', function ($scope, notie) {
         $scope.points = [];
         $scope.itinerary = '';
+        $scope.title = '';
+        $scope.description = '';
         $scope.point = {
             title: '',
             coords: {
@@ -147,6 +149,8 @@ angular.module('UI', ['ngNotie'])
                         let save = JSON.parse(data);
                         $scope.points = save.points;
                         $scope.itinerary = save.itinerary;
+                        $scope.title = save.title;
+                        $scope.description = save.description;
                         $scope.$apply();
                         notie.alert(1, 'Lecture réussite');
                     });
@@ -156,7 +160,9 @@ angular.module('UI', ['ngNotie'])
         $scope.exportDraft = function () {
             let save = {
                 points: $scope.points,
-                itinerary: $scope.itinerary
+                itinerary: $scope.itinerary,
+                title: $scope.title,
+                description: $scope.description
             };
             dialog.showSaveDialog({
                 title: 'Sélectionner un dossier',

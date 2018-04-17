@@ -18,16 +18,20 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#" ng-click="exportDraft()"><span class="oi oi-document"></span> Enregistrer le brouillon</a>
+          <a class="nav-link" href="#" ng-click="exportDraft()">
+            <span class="oi oi-document"></span> Enregistrer le brouillon</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" ng-click="openDraft()"><span class="oi oi-folder"></span> Ouvrir un brouillon</a>
+          <a class="nav-link" href="#" ng-click="openDraft()">
+            <span class="oi oi-folder"></span> Ouvrir un brouillon</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" ng-click="previewMap()"><span class="oi oi-phone"></span> Prévisualiser</a>
+          <a class="nav-link" href="#" ng-click="previewMap()">
+            <span class="oi oi-phone"></span> Prévisualiser</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" ng-click="export()"><span class="oi oi-external-link"></span> Exporter</a>
+          <a class="nav-link" href="#" ng-click="export()">
+            <span class="oi oi-external-link"></span> Exporter</a>
         </li>
       </ul>
     </div>
@@ -66,6 +70,23 @@
 
       </div>
       <div class="col-md-8 order-md-1">
+        <form novalidate>
+
+          <div class="mb-3" ng-class="{ 'was-validated': (title!='') }">
+            <label for="title">Titre</label>
+            <input type="text" class="form-control" id="title" placeholder="Titre" required ng-model="title">
+            <div class="invalid-feedback" style="width: 100%;">
+              Un titre est nécessaire.
+            </div>
+          </div>
+          <div class="mb-3" ng-class="{ 'was-validated': (description!='') }">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" placeholder="Description" required ng-model="description" rows="3"></textarea>
+            <div class="invalid-feedback" style="width: 100%;">
+              Une description est nécessaire.
+            </div>
+          </div>
+        </form>
 
         <div ng-show="editing">
           <h4 class="mb-3">Édition d'un point d'interêt</h4>
