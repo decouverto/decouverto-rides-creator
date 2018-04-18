@@ -206,14 +206,14 @@ angular.module('UI', ['ngNotie'])
             }, function (path) {
                 if (path !== undefined) {
                     fs.readFile(path[0], 'utf8', function (err, data) {
-                        if (err) return notie.alert(3, 'Echec de la lecture du brouillon');
+                        if (err) return notie.alert(3, 'Echec de la lecture du brouillon.');
                         let save = JSON.parse(data);
                         $scope.points = save.points;
                         $scope.itinerary = save.itinerary;
                         $scope.title = save.title;
                         $scope.description = save.description;
                         $scope.$apply();
-                        notie.alert(1, 'Lecture réussite');
+                        notie.alert(1, 'Lecture réussite.');
                     });
                 }
             });
@@ -234,8 +234,8 @@ angular.module('UI', ['ngNotie'])
             }, function (path) {
                 if (path !== undefined) {
                     fs.writeFile(path, JSON.stringify(save), function (err) {
-                        if (err) return notie.alert(3, 'Echec de la sauvegarde');
-                        notie.alert(1, 'Sauvegarde réussite');
+                        if (err) return notie.alert(3, 'Echec de la sauvegarde.');
+                        notie.alert(1, 'Sauvegarde réussite.');
                     });
                 }
             });
@@ -247,7 +247,7 @@ angular.module('UI', ['ngNotie'])
                     itinerary: $scope.itinerary
                 });
             } else {
-                notie.alert(3, 'Vous devez ajouter un fichier GPX');
+                notie.alert(3, 'Vous devez ajouter un fichier GPX !');
             }
 
         }
