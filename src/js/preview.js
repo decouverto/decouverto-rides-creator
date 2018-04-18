@@ -54,21 +54,22 @@ ipcRenderer.on('data', function (event, arg) {
     if (itinerary.length == 0) {
         const { data, googleMapsKey } = arg;
         GPXtoPoints(data.itinerary, function (err, results) {
-            if (err) console.err(err);
-            results.forEach(function (el) {
-                itinerary.push({ lat: el.latitude, lng: el.longitude });
-            });
-            data.points.forEach(function (el) {
-                markers.push({ coords: { lat: el.coords.latitude, lng: el.coords.longitude }, title: el.title });
-            });
-            let sumLat = 0;
-            let sumLng = 0;
-            results.forEach(function (el) {
-                sumLat += el.latitude;
-                sumLng += el.longitude;
-            });
-            center = { lat: sumLat / results.length, lng: sumLng / results.length }
-            loadGoogleMapsAPI(googleMapsKey)
+            if (!err) {
+                results.forEach(function (el) {
+                    itinerary.push({ lat: el.latitude, lng: el.longitude });
+                });
+                data.points.forEach(function (el) {
+                    markers.push({ coords: { lat: el.coords.latitude, lng: el.coords.longitude }, title: el.title });
+                });
+                let sumLat = 0;
+                let sumLng = 0;
+                results.forEach(function (el) {
+                    sumLat += el.latitude;
+                    sumLng += el.longitude;
+                });
+                center = { lat: sumLat / results.length, lng: sumLng / results.length }
+                loadGoogleMapsAPI(googleMapsKey)
+            }
         });
     }
 });

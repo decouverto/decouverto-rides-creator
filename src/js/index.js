@@ -7,8 +7,8 @@ const swap = function (theArray, indexA, indexB) {
     theArray[indexB] = temp;
 }
 const showModal = function (html) {
-    let modal = window.open('', 'modal')
-    modal.document.write('<head><link rel="stylesheet" href="css/bootstrap.min.css"></head><body><div class="container"><h1>Aperçu</h1>' + html + '</div></body>')
+    let modal = window.open('', 'modal');
+    modal.document.write('<head><link rel="stylesheet" href="css/bootstrap.min.css"></head><body><div class="container"><h1>Aperçu</h1>' + html + '</div></body>');
 }
 const { dialog } = require('electron').remote;
 const { ipcRenderer } = require('electron');
