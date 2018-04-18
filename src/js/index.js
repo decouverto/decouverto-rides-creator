@@ -10,10 +10,62 @@ const showModal = function (html) {
     let modal = window.open('', 'modal');
     modal.document.write('<head><link rel="stylesheet" href="css/bootstrap.min.css"></head><body><div class="container"><h1>Aperçu</h1>' + html + '</div></body>');
 }
-const { dialog } = require('electron').remote;
-const { ipcRenderer } = require('electron');
+
+const { ipcRenderer, remote } = require('electron');
+const { dialog, app, shell } = remote;
 const sizeOf = require('image-size');
-const fs = require('fs');
+const fs = require('fs-extra');
+const pathModule = require('path');
+const randomstring = require('randomstring');
+const GPXtoPoints = require('gpx-to-points');
+
+const generate = function (data, cb) {
+    var globalId = randomstring.generate(7);
+    var rootPath = pathModule.join(data.desktop, 'Decouverto', globalId);
+    fs.mkdirp(rootPath, function (err) {
+        if (err) return cb('Impossible de créer le fichier.');
+        fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, description: data.description, title: data.title }), 'utf8');
+        const points = [];
+        try {
+            data.points.forEach(function (point, pointKey) {
+                points.push({
+                    title: point.title,
+                    coords: point.coords,
+                    images: []
+                });
+                point.images.forEach(function (img, imgKey) {
+                    let newImage = {
+                        width: img.width,
+                        height: img.height,
+                        path: randomstring.generate(7) + '.' + img.path.split('.').pop()
+                    }
+                    points[pointKey].images.push(newImage);
+                    fs.copySync(img.path, pathModule.join(rootPath, '.tmp', 'images', newImage.path));
+                });
+                let newName = randomstring.generate(7) + '.' + point.sound.split('.').pop();
+                fs.copySync(point.sound, pathModule.join(rootPath, '.tmp', 'sounds', newName));
+                points[pointKey].sound = newName;
+            });
+        } catch (e) {
+            cb('Erreur lors de la copie des fichiers.')
+        }
+        GPXtoPoints(data.itinerary, function (err, results) {
+            if (err) cb('Le fichier GPX est invalide.');
+            let sumLat = 0;
+            let  sumLng = 0;
+            results.forEach(function (el) {
+                sumLat += el.latitude;
+                sumLng += el.longitude;
+            });
+            const center = { lat: sumLat / results.length, lng: sumLng / results.length }
+
+            fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title }), 'utf8');
+            cb(null, rootPath)
+        });
+
+    });
+
+};
 
 angular.module('UI', ['ngNotie'])
     .filter('filename', function () {
@@ -188,6 +240,26 @@ angular.module('UI', ['ngNotie'])
             } else {
                 notie.alert(3, 'Vous devez ajouter un fichier GPX');
             }
-            
+
+        }
+        $scope.export = function () {
+            if ($scope.points.length == 0 || $scope.title == '' || $scope.description == '' || $scope.itinerary == '') {
+                notie.alert(3, 'Veuillez remplir toutes les informations.');
+            } else {
+                generate({
+                    desktop: app.getPath('desktop'),
+                    points: $scope.points,
+                    itinerary: $scope.itinerary,
+                    title: $scope.title,
+                    description: $scope.description
+                }, function (err, path) {
+                    if (err) {
+                        notie.alert(3, err);
+                    } else {
+                        notie.alert(1, 'Exportation réussite.');
+                        shell.showItemInFolder(path);
+                    }
+                });
+            }
         }
     }])
