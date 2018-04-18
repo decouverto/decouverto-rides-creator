@@ -18,6 +18,7 @@ const fs = require('fs-extra');
 const pathModule = require('path');
 const randomstring = require('randomstring');
 const GPXtoPoints = require('gpx-to-points');
+const zipFolder = require('zip-folder');
 
 const generate = function (data, cb) {
     var globalId = randomstring.generate(7);
@@ -47,20 +48,28 @@ const generate = function (data, cb) {
                 points[pointKey].sound = newName;
             });
         } catch (e) {
-            cb('Erreur lors de la copie des fichiers.')
+            return cb('Erreur lors de la copie des fichiers.')
         }
         GPXtoPoints(data.itinerary, function (err, results) {
-            if (err) cb('Le fichier GPX est invalide.');
+            if (err) return cb('Le fichier GPX est invalide.');
             let sumLat = 0;
             let  sumLng = 0;
             results.forEach(function (el) {
                 sumLat += el.latitude;
                 sumLng += el.longitude;
             });
-            const center = { lat: sumLat / results.length, lng: sumLng / results.length }
+            const center = { lat: sumLat / results.length, lng: sumLng / results.length };
 
             fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title }), 'utf8');
-            cb(null, rootPath)
+            zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
+                if(err) return cb('Erreur lors de la compression des fichiers');
+                cb(null, rootPath);
+                try {
+                    fs.removeSync(pathModule.join(rootPath, '.tmp'));
+                } catch (e) {
+                    console.error(e);
+                }
+            });
         });
 
     });
