@@ -58,7 +58,7 @@ const generate = function (data, cb) {
                 sumLat += el.latitude;
                 sumLng += el.longitude;
             });
-            const center = { lat: sumLat / results.length, lng: sumLng / results.length };
+            const center = { latitude: sumLat / results.length, longitude: sumLng / results.length };
 
             fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title }), 'utf8');
             zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
