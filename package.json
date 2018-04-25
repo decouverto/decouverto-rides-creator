@@ -54,6 +54,7 @@
     "gpx-to-points": "0.0.0",
     "image-size": "^0.6.2",
     "ng-notie": "0.0.1",
+    "total-distance": "0.0.0",
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {

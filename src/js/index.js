@@ -19,13 +19,13 @@ const pathModule = require('path');
 const randomstring = require('randomstring');
 const GPXtoPoints = require('gpx-to-points');
 const zipFolder = require('zip-folder');
+const totalDistance = require('total-distance');
 
 const generate = function (data, cb) {
     var globalId = randomstring.generate(7);
     var rootPath = pathModule.join(data.desktop, 'Decouverto', globalId);
     fs.mkdirp(rootPath, function (err) {
         if (err) return cb('Impossible de créer le fichier.');
-        fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, description: data.description, title: data.title }), 'utf8');
         const points = [];
         try {
             data.points.forEach(function (point, pointKey) {
@@ -60,7 +60,11 @@ const generate = function (data, cb) {
             });
             const center = { latitude: sumLat / results.length, longitude: sumLng / results.length };
 
+            var distance = totalDistance(results);
+
+            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title }), 'utf8');
             fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title }), 'utf8');
+            
             zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
                 if(err) return cb('Erreur lors de la compression des fichiers');
                 cb(null, rootPath);
