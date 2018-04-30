@@ -20,6 +20,7 @@ const randomstring = require('randomstring');
 const GPXtoPoints = require('gpx-to-points');
 const zipFolder = require('zip-folder');
 const totalDistance = require('total-distance');
+const getRegionDelimitations = require('get-region-delimitations');
 
 const generate = function (data, cb) {
     var globalId = randomstring.generate(7);
@@ -60,10 +61,12 @@ const generate = function (data, cb) {
             });
             const center = { latitude: sumLat / results.length, longitude: sumLng / results.length };
 
-            var distance = totalDistance(results);
+            const distance = totalDistance(results);
+
+            const borders = getRegionDelimitations(results);
 
             fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title }), 'utf8');
-            fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title }), 'utf8');
+            fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title, borders }), 'utf8');
             
             zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
                 if(err) return cb('Erreur lors de la compression des fichiers');
