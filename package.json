@@ -1,6 +1,6 @@
 {
   "name": "decouverto-rides-creator",
-  "productName": "decouverto-rides-creator",
+  "productName": "Decouverto Rides Creator",
   "version": "1.0.0",
   "description": "A desktop software to create rides and add them to the main application.",
   "main": "src/index.js",
@@ -12,7 +12,7 @@
     "lint": "eslint src --color"
   },
   "keywords": [],
-  "author": "cjung",
+  "author": "Decouverto",
   "license": "MIT",
   "config": {
     "forge": {
@@ -25,20 +25,22 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "yarn"
+        "packageManager": "yarn",
+        "icon": "./icons/256x256.ico" 
       },
       "electronWinstallerConfig": {
-        "name": "decouverto_rides_creator"
+        "name": "decouverto",
+        "setupIcon": "./icons/256x256.ico" 
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "decouverto",
+        "name": "decouverto-rides-creator"
       },
       "windowsStoreConfig": {
-        "packageName": "",
-        "name": "decouvertoridescreator"
+        "packageName": "decouverto",
+        "name": "decouverto"
       }
     }
   },

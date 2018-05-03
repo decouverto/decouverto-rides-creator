@@ -5,7 +5,7 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
-let googleMapsKey = require('fs').readFileSync(`${__dirname}/.googlemaps`,'utf8');
+let googleMapsKey = require('fs').readFileSync(`${__dirname}/.googlemaps`, 'utf8');
 let data;
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -21,14 +21,16 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       nativeWindowOpen: true
-    }
+    },
+    icon: `file://${__dirname}/icons/2048x2048.png`,
+    title: 'Découverto: Outil de création de promenade'
   });
-  
+
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
     if (frameName === 'modal') {
@@ -36,6 +38,7 @@ const createWindow = () => {
       event.preventDefault()
       Object.assign(options, {
         title: 'Aperçu',
+        icon: `file://${__dirname}/icons/2048x2048.png`,
         modal: true,
         parent: mainWindow,
         width: 1280,
@@ -44,7 +47,7 @@ const createWindow = () => {
       event.newGuest = new BrowserWindow(options)
     }
   })
-  
+
 
   mainWindow.on('closed', () => {
     if (previewWindow) {
@@ -54,17 +57,22 @@ const createWindow = () => {
   });
 };
 
-ipcMain.on('open-preview', (event, arg) => {  
-  previewWindow = new BrowserWindow({ width: 800, height: 400 });
+ipcMain.on('open-preview', (event, arg) => {
+  previewWindow = new BrowserWindow({
+    width: 800, 
+    height: 400, 
+    title: 'Découverto: Aperçu de la carte',
+    icon: `file://${__dirname}/icons/2048x2048.png`
+  });
   previewWindow.on('closed', () => {
     previewWindow = null;
   });
   previewWindow.loadURL(`file://${__dirname}/preview.html`);
-  previewWindow.show(); 
+  previewWindow.show();
   data = arg;
 });
-ipcMain.on('window-opened',(event) => {  
-  event.sender.send('data', { data, googleMapsKey});
+ipcMain.on('window-opened', (event) => {
+  event.sender.send('data', { data, googleMapsKey });
 });
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
