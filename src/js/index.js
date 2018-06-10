@@ -65,7 +65,7 @@ const generate = function (data, cb) {
 
             const borders = getRegionDelimitations(results);
 
-            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title }), 'utf8');
+            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title, theme: data.theme, zone: data.zone }), 'utf8');
             fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title, borders }), 'utf8');
             
             zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
@@ -94,6 +94,8 @@ angular.module('UI', ['ngNotie'])
         $scope.itinerary = '';
         $scope.title = '';
         $scope.description = '';
+        $scope.theme = '';
+        $scope.zone = '';
         $scope.point = {
             title: '',
             coords: {
@@ -259,7 +261,7 @@ angular.module('UI', ['ngNotie'])
 
         }
         $scope.export = function () {
-            if ($scope.points.length == 0 || $scope.title == '' || $scope.description == '' || $scope.itinerary == '') {
+            if ($scope.points.length == 0 || $scope.title == '' || $scope.description == '' || $scope.itinerary == '' || $scope.theme == '' || $scope.zone == '') {
                 notie.alert(3, 'Veuillez remplir toutes les informations.');
             } else {
                 generate({
@@ -267,7 +269,9 @@ angular.module('UI', ['ngNotie'])
                     points: $scope.points,
                     itinerary: $scope.itinerary,
                     title: $scope.title,
-                    description: $scope.description
+                    description: $scope.description,
+                    zone: $scope.zone,
+                    theme: $scope.theme
                 }, function (err, path) {
                     if (err) {
                         notie.alert(3, err);
