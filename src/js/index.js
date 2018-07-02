@@ -221,6 +221,8 @@ angular.module('UI', ['ngNotie'])
                         $scope.itinerary = save.itinerary;
                         $scope.title = save.title;
                         $scope.description = save.description;
+                        $scope.theme = save.theme;
+                        $scope.zone = save.zone;
                         $scope.$apply();
                         notie.alert(1, 'Lecture réussite.');
                     });
@@ -232,6 +234,8 @@ angular.module('UI', ['ngNotie'])
                 points: $scope.points,
                 itinerary: $scope.itinerary,
                 title: $scope.title,
+                theme: $scope.theme,
+                zone: $scope.zone,
                 description: $scope.description
             };
             dialog.showSaveDialog({
