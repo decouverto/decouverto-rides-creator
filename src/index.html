@@ -99,6 +99,10 @@
               Une description est nécessaire.
             </div>
           </div>
+          <div  class="custom-control custom-checkbox" class="mb-3">
+            <input type="checkbox" class="custom-control-input"  id="from-book" ng-init="fromBook=false" ng-true-value="true" ng-false-value="false" required ng-model="fromBook">
+            <label for="from-book" class="custom-control-label">Trajet uniquement</label>
+          </div>
         </form>
 
         <div ng-show="editing">

@@ -65,7 +65,7 @@ const generate = function (data, cb) {
 
             const borders = getRegionDelimitations(results);
 
-            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title, theme: data.theme, zone: data.zone }), 'utf8');
+            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title, theme: data.theme, zone: data.zone, fromBook: data.fromBook  }), 'utf8');
             fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title, borders }), 'utf8');
             
             zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
@@ -96,6 +96,7 @@ angular.module('UI', ['ngNotie'])
         $scope.description = '';
         $scope.theme = '';
         $scope.zone = '';
+        $scope.fromBook = false;
         $scope.point = {
             title: '',
             coords: {
@@ -223,6 +224,7 @@ angular.module('UI', ['ngNotie'])
                         $scope.description = save.description;
                         $scope.theme = save.theme;
                         $scope.zone = save.zone;
+                        $scope.fromBook = save.fromBook || false;
                         $scope.$apply();
                         notie.alert(1, 'Lecture réussite.');
                     });
@@ -236,6 +238,7 @@ angular.module('UI', ['ngNotie'])
                 title: $scope.title,
                 theme: $scope.theme,
                 zone: $scope.zone,
+                fromBook: $scope.fromBook || false,
                 description: $scope.description
             };
             dialog.showSaveDialog({
@@ -275,6 +278,7 @@ angular.module('UI', ['ngNotie'])
                     title: $scope.title,
                     description: $scope.description,
                     zone: $scope.zone,
+                    fromBook: $scope.fromBook || false,
                     theme: $scope.theme
                 }, function (err, path) {
                     if (err) {
