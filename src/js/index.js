@@ -54,7 +54,7 @@ const generate = function (data, cb) {
         GPXtoPoints(data.itinerary, function (err, results) {
             if (err) return cb('Le fichier GPX est invalide.');
             let sumLat = 0;
-            let  sumLng = 0;
+            let sumLng = 0;
             results.forEach(function (el) {
                 sumLat += el.latitude;
                 sumLng += el.longitude;
@@ -65,11 +65,11 @@ const generate = function (data, cb) {
 
             const borders = getRegionDelimitations(results);
 
-            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title, theme: data.theme, zone: data.zone, fromBook: data.fromBook  }), 'utf8');
+            fs.writeFileSync(pathModule.join(rootPath, 'index.json'), JSON.stringify({ id: globalId, distance, description: data.description, title: data.title, theme: data.theme, zone: data.zone, fromBook: data.fromBook }), 'utf8');
             fs.writeFileSync(pathModule.join(rootPath, '.tmp', 'index.json'), JSON.stringify({ center, itinerary: results, points, title: data.title, borders }), 'utf8');
-            
-            zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function(err) {
-                if(err) return cb('Erreur lors de la compression des fichiers');
+
+            zipFolder(pathModule.join(rootPath, '.tmp'), pathModule.join(rootPath, globalId + '.zip'), function (err) {
+                if (err) return cb('Erreur lors de la compression des fichiers');
                 cb(null, rootPath);
                 try {
                     fs.removeSync(pathModule.join(rootPath, '.tmp'));
@@ -89,7 +89,7 @@ angular.module('UI', ['ngNotie'])
             return input.replace(/^.*(\\|\/|\:)/, ' ');
         };
     })
-    .controller('UICtrl', ['$scope', 'notie', function ($scope, notie) {
+    .controller('UICtrl', ['$scope', 'notie', '$http', function ($scope, notie, $http) {
         $scope.points = [];
         $scope.itinerary = '';
         $scope.title = '';
@@ -290,4 +290,34 @@ angular.module('UI', ['ngNotie'])
                 });
             }
         }
+        $http({
+            method: 'GET',
+            url: 'https://decouverto.fr/api/walks/categories'
+        }).then(function (res) {
+            $scope.existsTheme = true;
+            $scope.existsZone = true;
+            $scope.categories = res.data;
+            $scope.checkTheme = function (theme) {
+                var e = false;
+                for (var k in res.data.themes) {
+                    if (theme == res.data.themes[k]) {
+                        e = true;
+                        break;
+                    }
+                }
+                $scope.existsTheme = e;
+            }
+            $scope.checkZone = function (zone) {
+                var e = false;
+                for (var k in res.data.sectors) {
+                    if (zone == res.data.sectors[k]) {
+                        e = true;
+                        break;
+                    }
+                }
+                $scope.existsZone = e;
+            }
+        }, function () {
+            notie.alert(3, 'Une erreur a eu lieu dans la synchronisation avec le site internet.');
+        })
     }])

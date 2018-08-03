@@ -80,16 +80,24 @@
           </div>
           <div class="mb-3" ng-class="{ 'was-validated': (zone!='') }">
             <label for="zone">Secteur</label>
-            <input type="text" class="form-control" id="zone" placeholder="Secteur" required ng-model="zone">
+            <input type="text" class="form-control" id="zone" placeholder="Secteur" required ng-model="zone" ng-keyup="checkZone(zone)">
             <div class="invalid-feedback" style="width: 100%;">
               Un secteur est nécessaire.
+            </div>
+            <div class="categories-note">
+              <p class="warning" ng-if="!existsZone">Attention, le secteur "{{zone}}" n'existe pas encore, vous allez le créer.</p>
+              <p>Secteurs existants: <span ng-repeat="el in categories.sectors">"{{el}}"</span></p>
             </div>
           </div>
           <div class="mb-3" ng-class="{ 'was-validated': (theme!='') }">
             <label for="theme">Thème</label>
-            <input type="text" class="form-control" id="theme" placeholder="Thème" required ng-model="theme">
+            <input type="text" class="form-control" id="theme" placeholder="Thème" required ng-model="theme" ng-keyup="checkTheme(theme)">
             <div class="invalid-feedback" style="width: 100%;">
               Un thème est nécessaire.
+            </div>
+            <div class="categories-note">
+              <p class="warning" ng-if="!existsTheme">Attention, le theme "{{theme}}" n'existe pas encore, vous allez le créer.</p>
+              <p>Thèmes existants: <span ng-repeat="el in categories.themes">"{{el}}"</span></p>
             </div>
           </div>
           <div class="mb-3" ng-class="{ 'was-validated': (description!='') }">
