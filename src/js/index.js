@@ -90,6 +90,8 @@ angular.module('UI', ['ngNotie'])
         };
     })
     .controller('UICtrl', ['$scope', 'notie', '$http', function ($scope, notie, $http) {
+        $scope.showSectors = false;
+        $scope.showTheme = false;
         $scope.points = [];
         $scope.itinerary = '';
         $scope.title = '';

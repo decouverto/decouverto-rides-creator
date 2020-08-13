@@ -62,3 +62,6 @@
 .categories-note .warning {
     color: #EE5A24
 }
+.btn {
+    font-size: inherit;
+}

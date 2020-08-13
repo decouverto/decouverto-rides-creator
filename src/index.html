@@ -86,7 +86,12 @@
             </div>
             <div class="categories-note">
               <p class="warning" ng-if="!existsZone">Attention, le secteur "{{zone}}" n'existe pas encore, vous allez le créer.</p>
-              <p>Secteurs existants: <span ng-repeat="el in categories.sectors">"{{el}}"</span></p>
+              <p>Secteurs existants: 
+                <button class="btn" ng-click="showSectors=true" ng-show="!showSectors">Afficher</button>
+                <button class="btn" ng-click="showSectors=false" ng-show="showSectors">Cacher</button>
+                <ul ng-show="showSectors">
+                <li ng-repeat="sector in categories.sectors | orderBy:'sector'">{{sector}}</li>
+            </ul></p>
             </div>
           </div>
           <div class="mb-3" ng-class="{ 'was-validated': (theme!='') }">
@@ -97,7 +102,11 @@
             </div>
             <div class="categories-note">
               <p class="warning" ng-if="!existsTheme">Attention, le theme "{{theme}}" n'existe pas encore, vous allez le créer.</p>
-              <p>Thèmes existants: <span ng-repeat="el in categories.themes">"{{el}}"</span></p>
+              <p>Thèmes existants: <button class="btn" ng-click="showThemes=true" ng-show="!showThemes">Afficher</button>
+                <button class="btn" ng-click="showThemes=false" ng-show="showThemes">Cacher</button>
+                <ul ng-show="showThemes">
+                    <li ng-repeat="theme in categories.themes | orderBy:'theme'">{{theme}}</li>
+                </ul></p>
             </div>
           </div>
           <div class="mb-3" ng-class="{ 'was-validated': (description!='') }">
