@@ -25,6 +25,7 @@ const request = require('request');
 const progress = require('request-progress');
 const unzipper = require('unzipper');
 const createGpx = require('gps-to-gpx').default;
+const slugify = require('slugify');
 
 const generate = function (data, cb) {
     var globalId = randomstring.generate(7);
@@ -108,9 +109,9 @@ const extractDraft = function (id, data, progress_cb, cb) {
         for (var attrname in data) { 
             file[attrname] = data[attrname]; 
         }
-        fs.writeFile(pathModule.join(rootPath, 'brouilon.decouverto'), JSON.stringify(file), function (err) {
+        fs.writeFile(pathModule.join(app.getPath('desktop'), 'Decouverto', 'modifications', slugify(file.title) + '-brouillon-' + id + '.decouverto'), JSON.stringify(file), function (err) {
             if (err) return cb(err);
-            cb(null)
+            cb(null, file)
         });
     });
 }
@@ -362,13 +363,22 @@ angular.module('UI', ['ngNotie'])
             downloadId($scope.toDownloadId, function (str) {
                 $scope.progress = str;
                 $scope.$apply()
-            }, function (err) {
-                $scope.progressing = false;
-                $scope.$apply()
+            }, function (err, draft) {
                 if (err) {
-                    console.error(err)
+                    console.error(err);
+                    $scope.progressing = false;
+                    $scope.$apply();
                     return notie.alert(3, 'Une erreur est survenue');
                 }
+                $scope.progressing = false;
+                $scope.points = draft.points;
+                $scope.itinerary = draft.itinerary;
+                $scope.title = draft.title;
+                $scope.description = draft.description;
+                $scope.theme = draft.theme;
+                $scope.zone = draft.zone;
+                $scope.fromBook = draft.fromBook || false;
+                $scope.$apply();
                 notie.alert(1, 'Téléchargement réussie.');
             })
         }
