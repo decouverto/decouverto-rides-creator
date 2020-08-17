@@ -21,6 +21,9 @@ const GPXtoPoints = require('gpx-to-points');
 const zipFolder = require('zip-folder');
 const totalDistance = require('total-distance');
 const getRegionDelimitations = require('get-region-delimitations');
+const request = require('request');
+const progress = require('request-progress');
+const unzipper = require('unzipper');
 
 const generate = function (data, cb) {
     var globalId = randomstring.generate(7);
@@ -82,6 +85,34 @@ const generate = function (data, cb) {
     });
 
 };
+
+const downloadId = function (id, progress_cb, cb) {
+    let rootPath = pathModule.join(app.getPath('desktop'), 'Decouverto', 'modifications');
+    let newId = randomstring.generate(7);
+    fs.mkdirp(pathModule.join(rootPath, newId), function (err) {
+        if (err) return cb(err);
+        progress(request('https://decouverto.fr/walks/' + id + '.zip'), {})
+        .on('progress', function (state) {
+            progress_cb('Téléchargement ' + (state.percent * 100).toFixed(2) + '%')
+        })
+        .on('error', cb)
+        .on('end', function () {
+            progress_cb('Décompression')
+        })
+        .pipe(fs.createWriteStream(pathModule.join(rootPath, newId + '.zip')))
+        .on('error', cb)
+
+        .on('finish', function () {
+            fs.createReadStream(pathModule.join(rootPath, newId + '.zip'))
+                .pipe(unzipper.Extract({ path: pathModule.join(rootPath, newId) }))
+                .on('error', cb)
+                .on('close', function () {
+                    cb(null)
+                })
+        })
+    });
+
+}
 
 angular.module('UI', ['ngNotie'])
     .filter('filename', function () {
@@ -291,6 +322,19 @@ angular.module('UI', ['ngNotie'])
                     }
                 });
             }
+        }
+        $scope.downloadId = function () {
+            $scope.progressing = true;
+            $scope.progress = '';
+            downloadId($scope.toDownloadId, function (str) {
+                $scope.progress = str;
+                $scope.$apply()
+            }, function (err) {
+                $scope.progressing = false;
+                $scope.$apply()
+                if (err) return notie.alert(3, 'Une erreur est survenue');
+                notie.alert(1, 'Téléchargement réussie.');
+            })
         }
         $http({
             method: 'GET',

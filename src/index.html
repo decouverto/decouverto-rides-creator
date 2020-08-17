@@ -277,7 +277,10 @@
             <input type="text" class="form-control" placeholder="Identifiant de la balade" ng-model="toDownloadId" required>
           </div>
           <br>
-          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-click="downloadId()">Modifier</button>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-click="downloadId()" ng-hide="progressing">Modifier</button>
+          <p ng-show="progressing"  class="alert alert-primary" >
+            {{progress}}
+          </p>
         </form>
       </div>
     </div>

@@ -54,7 +54,10 @@
     "image-size": "^0.6.2",
     "ng-notie": "0.0.1",
     "randomstring": "^1.1.5",
+    "request": "^2.88.2",
+    "request-progress": "^3.0.0",
     "total-distance": "0.0.0",
+    "unzipper": "^0.10.11",
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {
