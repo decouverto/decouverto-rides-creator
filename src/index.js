@@ -1,4 +1,12 @@
-import { app, BrowserWindow, Menu, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+
+require('electron-context-menu')({ 
+  labels: {
+    cut: 'Couper',
+    copy: 'Copier',
+    paste: 'Coller'
+  }
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -55,6 +63,7 @@ const createWindow = () => {
     }
     mainWindow = null;
   });
+  
 };
 
 ipcMain.on('open-preview', (event, arg) => {

@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "angular": "^1.6.9",
-    "electron-compile": "^6.4.2",
+    "electron-compile": "^6.4.4",
+    "electron-context-menu": "^0.11.0",
     "electron-squirrel-startup": "^1.0.0",
     "fs-extra": "^5.0.0",
     "get-region-delimitations": "0.0.0",
