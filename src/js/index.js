@@ -382,6 +382,21 @@ angular.module('UI', ['ngNotie'])
                 notie.alert(1, 'Téléchargement réussie.');
             })
         }
+        $scope.getFirstPoint = function () {
+            let p = $scope.itinerary;
+            if (p != '' && p != null) {
+                GPXtoPoints(p, function (err, results) {
+                    if (err) return notie.alert(3, 'Le fichier GPX est invalide.');
+                    $scope.point.coords.latitude = Number(results[0].latitude.toFixed(5));
+                    $scope.point.coords.longitude = Number(results[0].longitude.toFixed(5));
+                    $scope.point.title = 'Départ';
+                    $scope.$apply()
+                    notie.alert(1, 'Les coordonnées ont été reportés.');
+                });
+            } else {
+                notie.alert(3, 'Veuillez importer un GPX.');
+            }
+        }
         $http({
             method: 'GET',
             url: 'https://decouverto.fr/api/walks/categories'
