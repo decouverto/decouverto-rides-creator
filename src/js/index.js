@@ -397,6 +397,9 @@ angular.module('UI', ['ngNotie'])
                 notie.alert(3, 'Veuillez importer un GPX.');
             }
         }
+        $scope.openResizeImg = function () {
+            ipcRenderer.send('open-resize-image');
+        }
         $http({
             method: 'GET',
             url: 'https://decouverto.fr/api/walks/categories'

@@ -20,6 +20,7 @@ let data;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let previewWindow;
+let resizeWindow;
 
 
 const createWindow = () => {
@@ -61,6 +62,9 @@ const createWindow = () => {
     if (previewWindow) {
       previewWindow.close();
     }
+    if (resizeWindow) {
+      resizeWindow.close();
+    }
     mainWindow = null;
   });
   
@@ -83,6 +87,20 @@ ipcMain.on('open-preview', (event, arg) => {
 ipcMain.on('window-opened', (event) => {
   event.sender.send('data', { data, googleMapsKey });
 });
+ipcMain.on('open-resize-image', (event, arg) => {
+  resizeWindow = new BrowserWindow({
+    width: 800, 
+    height: 400, 
+    title: 'Découverto: Découverto: Réduire la taille d\'une image',
+    icon: `file://${__dirname}/icons/2048x2048.png`
+  });
+  resizeWindow.on('closed', () => {
+    resizeWindow = null;
+  });
+  resizeWindow.loadURL(`file://${__dirname}/resize-image.html`);
+  resizeWindow.show();
+});
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Découverto: Réduire la taille d'une image</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        body, html {
+            margin: 0;
+            width: 100%;
+        }
+        main {
+            margin: auto;
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+            <h1>Réduire la taille d'une image</h1>
+            <input type="file" value="C:\fakepath" id="file">
+            <h3>Image originale</h3>
+            <br/>
+            <img id="original-image" width="500px">
+            <h3>Nouvelle image</h3>
+            <img id="resized-image" width="500px"></a>
+            <a id="download-resized-image" style="display: none;">Télécharger l'image</a>    
+            <p class="download" id="no-change" style="display: none;">Aucun changement à appliquer sur cette image.</p>
+    </main>
+    <script src="js/resize-image.js"></script>
+</body>
+
+</html>
