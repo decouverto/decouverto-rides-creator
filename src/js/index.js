@@ -24,6 +24,7 @@ const getRegionDelimitations = require('get-region-delimitations');
 const request = require('request');
 const progress = require('request-progress');
 const unzipper = require('unzipper');
+const createGpx = require('gps-to-gpx').default;
 
 const generate = function (data, cb) {
     var globalId = randomstring.generate(7);
@@ -83,8 +84,37 @@ const generate = function (data, cb) {
         });
 
     });
-
 };
+
+const extractDraft = function (id, data, progress_cb, cb) {
+    progress_cb('Création du brouillon')
+    let rootPath = pathModule.join(app.getPath('desktop'), 'Decouverto', 'modifications', id);
+    let file = require(pathModule.join(rootPath, 'index.json'));
+
+    // Create GPX
+    progress_cb('Création du GPX')
+    let gpx = createGpx(file.itinerary, {});
+    let gpxPath = pathModule.join(rootPath, 'itinerary.gpx');
+    fs.writeFile(gpxPath, gpx, function(err) {
+        if (err) return cb(err);
+        data.itinerary = gpxPath;
+        file.points.forEach(function (el) {
+            el.sound = pathModule.join(rootPath, 'sounds', el.sound);
+            el.images.forEach(function (img) {
+                img.path = pathModule.join(rootPath, 'images', img.path);
+            });
+        });
+        progress_cb('Écriture du brouillon')
+        for (var attrname in data) { 
+            file[attrname] = data[attrname]; 
+        }
+        fs.writeFile(pathModule.join(rootPath, 'brouilon.decouverto'), JSON.stringify(file), function (err) {
+            if (err) return cb(err);
+            cb(null)
+        });
+    });
+}
+
 
 const downloadId = function (id, progress_cb, cb) {
     let rootPath = pathModule.join(app.getPath('desktop'), 'Decouverto', 'modifications');
@@ -101,17 +131,20 @@ const downloadId = function (id, progress_cb, cb) {
         })
         .pipe(fs.createWriteStream(pathModule.join(rootPath, newId + '.zip')))
         .on('error', cb)
-
         .on('finish', function () {
             fs.createReadStream(pathModule.join(rootPath, newId + '.zip'))
                 .pipe(unzipper.Extract({ path: pathModule.join(rootPath, newId) }))
                 .on('error', cb)
                 .on('close', function () {
-                    cb(null)
+                    progress_cb('Fichier décompressé, téléchargement des métadonnées')
+                    request('https://decouverto.fr/api/walks/' + id, function (err, response, body) {
+                        if (err) return cb(err);
+                        extractDraft(newId, JSON.parse(body), progress_cb, cb)
+                    });
                 })
         })
     });
-
+    
 }
 
 angular.module('UI', ['ngNotie'])
@@ -332,7 +365,10 @@ angular.module('UI', ['ngNotie'])
             }, function (err) {
                 $scope.progressing = false;
                 $scope.$apply()
-                if (err) return notie.alert(3, 'Une erreur est survenue');
+                if (err) {
+                    console.error(err)
+                    return notie.alert(3, 'Une erreur est survenue');
+                }
                 notie.alert(1, 'Téléchargement réussie.');
             })
         }

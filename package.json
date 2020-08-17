@@ -50,6 +50,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "fs-extra": "^5.0.0",
     "get-region-delimitations": "0.0.0",
+    "gps-to-gpx": "^1.5.1",
     "gpx-to-points": "0.0.1",
     "image-size": "^0.6.2",
     "ng-notie": "0.0.1",
