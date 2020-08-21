@@ -1,7 +1,7 @@
 {
   "name": "decouverto-rides-creator",
   "productName": "Decouverto Rides Creator",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A desktop software to create rides and add them to the main application.",
   "main": "src/index.js",
   "scripts": {
