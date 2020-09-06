@@ -90,7 +90,7 @@
                 <button class="btn" ng-click="showSectors=true" ng-show="!showSectors">Afficher</button>
                 <button class="btn" ng-click="showSectors=false" ng-show="showSectors">Cacher</button>
                 <ul ng-show="showSectors">
-                <li ng-repeat="sector in categories.sectors | orderBy:'sector'">{{sector}}</li>
+                <li ng-repeat="sector in categories.sectors">{{sector}}</li>
             </ul></p>
             </div>
           </div>
@@ -105,7 +105,7 @@
               <p>Thèmes existants: <button class="btn" ng-click="showThemes=true" ng-show="!showThemes">Afficher</button>
                 <button class="btn" ng-click="showThemes=false" ng-show="showThemes">Cacher</button>
                 <ul ng-show="showThemes">
-                    <li ng-repeat="theme in categories.themes | orderBy:'theme'">{{theme}}</li>
+                    <li ng-repeat="theme in categories.themes">{{theme}}</li>
                 </ul></p>
             </div>
           </div>

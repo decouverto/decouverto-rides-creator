@@ -406,6 +406,8 @@ angular.module('UI', ['ngNotie'])
         }).then(function (res) {
             $scope.existsTheme = true;
             $scope.existsZone = true;
+            res.data.themes = res.data.themes.sort();
+            res.data.sectors = res.data.sectors.sort();
             $scope.categories = res.data;
             $scope.checkTheme = function (theme) {
                 var e = false;
