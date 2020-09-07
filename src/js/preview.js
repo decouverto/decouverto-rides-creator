@@ -1,74 +1,116 @@
 const { ipcRenderer } = require('electron');
 const GPXtoPoints = require('gpx-to-points');
 
-function loadGoogleMapsAPI(key) {
-    var script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=' + key + '&callback=initMap';
-    script.type = 'text/javascript';
-    document.getElementsByTagName('head')[0].appendChild(script);
-}
-
-const container = document.getElementById('container');
-const mapdiv = document.getElementById('mapdiv');
-
-let map;
 let itinerary = [];
 let markers = [];
 let center;
+var markerSource = new ol.source.Vector();
+var lineSource = new ol.source.Vector();
+var lineStyle = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        color: '#000',
+        width: 5
+    })
+});
+
+
 function initMap() {
-    map = new google.maps.Map(mapdiv, {
-        center: center,
-        zoom: 12
+
+
+
+    var points = [];
+    itinerary.forEach(function(el) {
+        points.push([el.lng, el.lat]);
     });
-    let path = new google.maps.Polyline({
-        path: itinerary,
-        geodesic: true,
-        strokeColor: '#000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
+    points.push([itinerary[0].lng, itinerary[0].lat]);
+
+    var lineString = new ol.geom.LineString(points);
+    lineString.transform('EPSG:4326', 'EPSG:3857');
+    lineSource.addFeature(new ol.Feature({
+        geometry: lineString,
+        name: 'Line'
+    }));
+
+    function addMarker(lon, lat, title) {
+
+        var iconFeature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+        });
+
+        iconFeature.setStyle(new ol.style.Style({
+            image: new ol.style.Icon(({
+                anchor: [0.5, 35],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                opacity: 0.75,
+                src: 'https://decouverto.fr/images/marker_icon.png'
+            })),
+            text: new ol.style.Text({
+                offsetY: -40,
+                font: '14px Calibri,sans-serif',
+                fill: new ol.style.Fill({ color: '#e74c3c' }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 2
+                }),
+                text: title
+            })
+        }));
+
+        markerSource.addFeature(iconFeature);
+    }
+
+    markers.forEach(function(el) {
+        addMarker(el.coords.lng, el.coords.lat, el.title)
     });
-    path.setMap(map);
-    markers.forEach(function (el) {
-        var infowindow = new google.maps.InfoWindow({
-            content: '<h4>' + el.title + '</h4>'
-        });
-        var marker = new google.maps.Marker({
-            position: el.coords,
-            map: map
-        });
-        marker.addListener('click', function () {
-            infowindow.open(map, marker);
-        });
+    var map = new ol.Map({
+        target: 'mapdiv',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            new ol.layer.Vector({
+                source: lineSource,
+                style: lineStyle,
+            }),
+            new ol.layer.Vector({
+                source: markerSource
+            })
+        ],
+        view: new ol.View({
+            center: [0, 0],
+            zoom: 0
+        })
     });
+
+    map.getView().setCenter(ol.proj.transform([center.lng, center.lat], 'EPSG:4326', 'EPSG:3857'));
+    map.getView().setZoom(15);
 }
 
-function resizeMap() {
-    mapdiv.style.height = (container.offsetHeight) + 'px';
-    mapdiv.style.width = (container.offsetWidth - 0.02 * container.offsetWidth) + 'px';
-}
-window.addEventListener('resize', resizeMap);
-resizeMap();
+
+
+
 
 ipcRenderer.send('window-opened')
-ipcRenderer.on('data', function (event, arg) {
+ipcRenderer.on('data', function(event, arg) {
     if (itinerary.length == 0) {
         const { data, googleMapsKey } = arg;
-        GPXtoPoints(data.itinerary, function (err, results) {
+        GPXtoPoints(data.itinerary, function(err, results) {
             if (!err) {
-                results.forEach(function (el) {
+                results.forEach(function(el) {
                     itinerary.push({ lat: el.latitude, lng: el.longitude });
                 });
-                data.points.forEach(function (el) {
+                data.points.forEach(function(el) {
                     markers.push({ coords: { lat: el.coords.latitude, lng: el.coords.longitude }, title: el.title });
                 });
                 let sumLat = 0;
                 let sumLng = 0;
-                results.forEach(function (el) {
+                results.forEach(function(el) {
                     sumLat += el.latitude;
                     sumLng += el.longitude;
                 });
                 center = { lat: sumLat / results.length, lng: sumLng / results.length }
-                loadGoogleMapsAPI(googleMapsKey)
+                initMap();
             }
         });
     }

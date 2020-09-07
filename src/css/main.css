@@ -68,3 +68,7 @@
 .btn-small {
     font-size: 10px
 }
+.map {
+    height: 400px;
+    width: 100%;
+  }
