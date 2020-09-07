@@ -16,8 +16,6 @@ var lineStyle = new ol.style.Style({
 
 function initMap() {
 
-
-
     var points = [];
     itinerary.forEach(function(el) {
         points.push([el.lng, el.lat]);
@@ -102,7 +100,7 @@ function initMap() {
 ipcRenderer.send('window-opened');
 ipcRenderer.on('data', function(event, arg) {
     if (itinerary.length == 0) {
-        const { data, googleMapsKey } = arg;
+        const { data } = arg;
         GPXtoPoints(data.itinerary, function(err, results) {
             if (!err) {
                 results.forEach(function(el) {
