@@ -85,6 +85,7 @@ function initMap() {
 
     map.getView().setCenter(ol.proj.transform([center.lng, center.lat], 'EPSG:4326', 'EPSG:3857'));
     map.getView().setZoom(15);
+    document.getElementById('alert').style.display = 'none';
 }
 
 

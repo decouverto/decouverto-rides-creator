@@ -17,8 +17,11 @@
         <a class="navbar-brand" href="#">Découverto</a>
     </nav>
     <div class="container" id="container">
-        <div id="mapdiv" class="map" style="height: 500px;width: 500px;"><g class="text-danger">Impossible de créer la carte: vérifiez que le fichier GPX est valide.</g></div>
         <p><span class="text-danger">Attention:</span> la carte ne s'actualise pas, lorsque vous modifiez un point vous devez obligatoirement ouvrir une nouvelle carte pour avoir un nouvel aperçu.</p>
+        <div id="mapdiv" class="map" style="height: 500px;width: 500px;">
+            <g class="text-danger" id="alert">Impossible de créer la carte: vérifiez que le fichier GPX est valide.</g>
+        </div>
+
     </div>
 
     <footer class="my-5 pt-5 text-muted text-center text-small">
@@ -28,4 +31,5 @@
     <script src="js/preview.js"></script>
     </div>
 </body>
+
 </html>
