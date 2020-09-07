@@ -86,13 +86,20 @@ function initMap() {
     map.getView().setCenter(ol.proj.transform([center.lng, center.lat], 'EPSG:4326', 'EPSG:3857'));
     map.getView().setZoom(15);
     document.getElementById('alert').style.display = 'none';
+
+    map.on('click', function(evt) {
+        /*console.info(evt.pixel);
+        console.info(map.getPixelFromCoordinate(evt.coordinate));
+        console.info(ol.proj.toLonLat(evt.coordinate));*/
+        var coords = ol.proj.toLonLat(evt.coordinate);
+        var lat = coords[1].toFixed(4);
+        var lon = coords[0].toFixed(4);
+        var locTxt = "Latitude: " + lat + " Longitude: " + lon;
+        document.getElementById('coords').innerHTML = locTxt;
+    });
 }
 
-
-
-
-
-ipcRenderer.send('window-opened')
+ipcRenderer.send('window-opened');
 ipcRenderer.on('data', function(event, arg) {
     if (itinerary.length == 0) {
         const { data, googleMapsKey } = arg;
