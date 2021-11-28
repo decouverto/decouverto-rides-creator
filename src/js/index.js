@@ -122,7 +122,7 @@ const downloadId = function (id, progress_cb, cb) {
     let newId = randomstring.generate(7);
     fs.mkdirp(pathModule.join(rootPath, newId), function (err) {
         if (err) return cb(err);
-        progress(request('https://decouverto.fr/walks/' + id + '.zip'), {})
+        progress(request('http://decouverto.fr:8000/save/' + id + '.zip'), {})
         .on('progress', function (state) {
             progress_cb('Téléchargement ' + (state.percent * 100).toFixed(2) + '%')
         })
@@ -138,7 +138,7 @@ const downloadId = function (id, progress_cb, cb) {
                 .on('error', cb)
                 .on('close', function () {
                     progress_cb('Fichier décompressé, téléchargement des métadonnées')
-                    request('https://decouverto.fr/api/walks/' + id, function (err, response, body) {
+                    request('http://decouverto.fr:8000/api/walks/' + id, function (err, response, body) {
                         if (err) return cb(err);
                         extractDraft(newId, JSON.parse(body), progress_cb, cb)
                     });
@@ -402,7 +402,7 @@ angular.module('UI', ['ngNotie'])
         }
         $http({
             method: 'GET',
-            url: 'https://decouverto.fr/api/walks/categories'
+            url: 'http://decouverto.fr:8000/api/walks/categories'
         }).then(function (res) {
             $scope.existsTheme = true;
             $scope.existsZone = true;
