@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang⁼ "fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Découverto: Outil de création de promenade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+  <link href="css/form-validation.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body class="bg-light" ng-app="UI" ng-controller="UICtrl">
+  <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Découverto</a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="exportDraft()">
+            <span class="oi oi-document"></span> Enregistrer le brouillon</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="openDraft()">
+            <span class="oi oi-folder"></span> Ouvrir un brouillon</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="previewMap()">
+            <span class="oi oi-phone"></span> Prévisualiser</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" ng-click="export()">
+            <span class="oi oi-external-link"></span> Exporter</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="logo.png" alt="" width="144" height="144">
+      <h2>Outil de création de promenade</h2>
+      <p class="lead">Grâce à cet outil vous pourrez créer des parcours que vous pourrez ajouter par la suite à l'application "Les Balades de Découverto"</p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">Points</span>
+          <span class="badge badge-secondary badge-pill">{{points.length}}</span>
+        </h4>
+        <p ng-hide="points.length">Aucune point n'a été créé.</p>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-condensed" ng-repeat="item in points">
+            <div>
+              <h6 class="my-0">{{item.title}}</h6>
+              <small class="text-muted">n°{{$index + 1}}</small>
+            </div>
+            <div>
+              <span class="oi oi-arrow-bottom list-action" ng-click="switchPosition($index, $index+1)"></span>
+              <span class="oi oi-arrow-top list-action" ng-click="switchPosition($index, $index-1)"></span>
+            </div>
+            <div>
+              <span class="oi oi-trash list-action" ng-click="deletePoint($index)"></span>
+              <span class="oi oi-pencil list-action" ng-click="startEditingPoint(item,$index)"></span>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+      <div class="col-md-8 order-md-1">
+        <form novalidate>
+
+          <div class="mb-3" ng-class="{ 'was-validated': (title!='') }">
+            <label for="title">Titre</label>
+            <input type="text" class="form-control" id="title" placeholder="Titre" required ng-model="title">
+            <div class="invalid-feedback" style="width: 100%;">
+              Un titre est nécessaire.
+            </div>
+          </div>
+          <div class="mb-3" ng-class="{ 'was-validated': (zone!='') }">
+            <label for="zone">Secteur</label>
+            <input type="text" class="form-control" id="zone" placeholder="Secteur" required ng-model="zone" ng-keyup="checkZone(zone)">
+            <div class="invalid-feedback" style="width: 100%;">
+              Un secteur est nécessaire.
+            </div>
+            <div class="categories-note">
+              <p class="warning" ng-if="!existsZone">Attention, le secteur "{{zone}}" n'existe pas encore, vous allez le créer.</p>
+              <p>Secteurs existants: 
+                <button class="btn" ng-click="showSectors=true" ng-show="!showSectors">Afficher</button>
+                <button class="btn" ng-click="showSectors=false" ng-show="showSectors">Cacher</button>
+                <ul ng-show="showSectors">
+                <li ng-repeat="sector in categories.sectors">{{sector}}</li>
+            </ul></p>
+            </div>
+          </div>
+          <div class="mb-3" ng-class="{ 'was-validated': (theme!='') }">
+            <label for="theme">Thème</label>
+            <input type="text" class="form-control" id="theme" placeholder="Thème" required ng-model="theme" ng-keyup="checkTheme(theme)">
+            <div class="invalid-feedback" style="width: 100%;">
+              Un thème est nécessaire.
+            </div>
+            <div class="categories-note">
+              <p class="warning" ng-if="!existsTheme">Attention, le theme "{{theme}}" n'existe pas encore, vous allez le créer.</p>
+              <p>Thèmes existants: <button class="btn" ng-click="showThemes=true" ng-show="!showThemes">Afficher</button>
+                <button class="btn" ng-click="showThemes=false" ng-show="showThemes">Cacher</button>
+                <ul ng-show="showThemes">
+                    <li ng-repeat="theme in categories.themes">{{theme}}</li>
+                </ul></p>
+            </div>
+          </div>
+          <div class="mb-3" ng-class="{ 'was-validated': (description!='') }">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" placeholder="Description" required ng-model="description" rows="3"></textarea>
+            <div class="invalid-feedback" style="width: 100%;">
+              Une description est nécessaire.
+            </div>
+          </div>
+          <div  class="custom-control custom-checkbox" class="mb-3">
+            <input type="checkbox" class="custom-control-input"  id="from-book" ng-init="fromBook=false" ng-true-value="true" ng-false-value="false" required ng-model="fromBook">
+            <label for="from-book" class="custom-control-label">Trajet uniquement</label>
+          </div>
+        </form>
+
+        <div ng-show="editing">
+          <h4 class="mb-3">Édition d'un point d'interêt</h4>
+
+          <form name="editPointForm" novalidate ng-submit="editing=false">
+
+            <div class="mb-3" ng-class="{ 'was-validated': (editPoint.title!='') }">
+              <label for="username">Nom</label>
+              <input type="text" class="form-control" id="name" placeholder="Nom" required ng-model="editPoint.title">
+              <div class="invalid-feedback" style="width: 100%;">
+                Un nom est nécessaire.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (editPoint.coords.latitude!='') }">
+                <label for="latitude">Latitude</label>
+                <input type="number" step="0.00001" class="form-control" id="latitude" placeholder="48.76707" value="" required ng-model="editPoint.coords.latitude">
+                <div class="invalid-feedback">
+                  Une latitude valide est nécessaire.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (editPoint.coords.longitude!='') }">
+                <label for="longitude">Longitude</label>
+                <input type="number" step="0.00001" class="form-control" id="longitude" placeholder="7.258699" value="" required ng-model="editPoint.coords.longitude">
+                <div class="invalid-feedback">
+                  Une longitude valide est nécessaire.
+                </div>
+              </div>
+            </div>
+            <div class="mb-3" ng-class="{ 'was-validated': (editPoint.sound!='') }">
+              <label for="sound">Explication audio</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <span class="oi oi-musical-note"></span>
+                  </span>
+                </div>
+                <input type="text" class="form-control" placeholder="Fichier audio" ng-model="editPoint.sound" disabled required>
+                <div class="invalid-feedback" style="width: 100%;">
+                  Un fichier audio est obligatoire.
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary mt-2" ng-click="addSound(editPoint)">Sélectionner une explication audio</button>
+            </div>
+            <div class="mb-3">
+              <label>Illustrations</label>
+              <ul>
+                <li ng-repeat="item in editPoint.images">
+                  <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
+                  <span class="badge badge-pill badge-danger badge-action" ng-click="removeImage(editPoint, $item)">
+                    <span class="oi oi-minus"></span>
+                  </span>
+                </li>
+              </ul>
+              <p ng-hide="editPoint.images.length">
+                <i>Aucune illustration n'a été sélectionné.</i>
+              </p>
+              <button type="button" class="btn btn-secondary" ng-click="addImage(editPoint)">Sélectionner des illustrations</button>
+              <br>
+              <a class="btn btn-light btn-small" style="margin-top: 10px;" ng-click="openResizeImg()">Réduire la taille des images</a>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="editPointForm.$invalid">Éditer le point d'interêt</button>
+          </form>
+          <hr class="mb-4">
+        </div>
+
+        <h4 class="mb-3">Ajout d'un point d'interêt</h4>
+
+        <form name="addPointForm" novalidate ng-submit="addPoint()">
+
+          <div class="mb-3" ng-class="{ 'was-validated': (point.title!='') }">
+            <label for="username">Nom</label>
+            <input type="text" class="form-control" id="name" placeholder="Nom" required ng-model="point.title">
+            <div class="invalid-feedback" style="width: 100%;">
+              Un nom est nécessaire.
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (point.coords.latitude!='') }">
+              <label for="latitude">Latitude</label>
+              <input type="number" step="0.00001" class="form-control" id="latitude" placeholder="48.76707" value="" required ng-model="point.coords.latitude">
+              <div class="invalid-feedback">
+                Une latitude valide est nécessaire.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3" ng-class="{ 'was-validated': (point.coords.longitude!='') }">
+              <label for="longitude">Longitude</label>
+              <input type="number" step="0.00001" class="form-control" id="longitude" placeholder="7.258699" value="" required ng-model="point.coords.longitude">
+              <div class="invalid-feedback">
+                Une longitude valide est nécessaire.
+              </div>
+            </div>
+            <div class="col">
+              <a class="btn btn-light btn-small" ng-click="getFirstPoint()">Reporter les coordonnées du premier point</a>
+            </div>
+            
+          </div>
+          <div class="mb-3" ng-class="{ 'was-validated': (point.sound!='') }">
+            <label for="sound">Explication audio</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <span class="oi oi-musical-note"></span>
+                </span>
+              </div>
+              <input type="text" class="form-control" placeholder="Fichier audio" ng-model="point.sound" disabled required>
+              <div class="invalid-feedback" style="width: 100%;">
+                Un fichier audio est obligatoire.
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary mt-2" ng-click="addSound(point)">Sélectionner une explication audio</button>
+          </div>
+          <div class="mb-3">
+            <label>Illustrations
+              <i>(facultatif)</i>
+            </label>
+            <ul>
+              <li ng-repeat="item in point.images">
+                <b class="preview-image" ng-click="showImage(item.path)" alt="{{item.path}}" title="{{item.path}}">{{item.path | filename }}</b> {{item.width}}x{{item.height}}
+                <span class="badge badge-pill badge-danger badge-action" ng-click="removeImage(point, $item)">
+                  <span class="oi oi-minus"></span>
+                </span>
+              </li>
+            </ul>
+            
+            <p ng-hide="point.images.length">
+              <i>Aucune illustration n'a été sélectionné.</i>
+            </p>
+            <button type="button" class="btn btn-secondary" ng-click="addImage(point)">Sélectionner des illustrations</button> 
+            <br>
+            <a class="btn btn-light btn-small" style="margin-top: 10px;" ng-click="openResizeImg()">Réduire la taille des images</a>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="addPointForm.$invalid">Ajouter un point d'interêt</button>
+        </form>
+
+        <hr class="mb-4">
+
+        <form>
+          <h4 class="mb-3">Ajout d'un tracé GPS</h4>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <span class="oi oi-map-marker"></span>
+              </span>
+            </div>
+            <input type="text" class="form-control" placeholder="Fichier GPX" ng-model="itinerary" disabled required>
+          </div>
+          <br>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-click="choseGPSFile()">Ajouter un tracé GPS</button>
+        </form>
+
+        <hr class="mb-4">
+
+        <form>
+          <h3 class="mb-3">Modifier un circuit déjà existant</h3>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <span class="oi oi-tag"></span>
+              </span>
+            </div>
+            <input type="text" class="form-control" placeholder="Identifiant de la balade" ng-model="toDownloadId" required>
+          </div>
+          <br>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" ng-click="downloadId()" ng-hide="progressing">Modifier</button>
+          <p ng-show="progressing"  class="alert alert-primary" >
+            {{progress}}
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+      <p class="mb-1">&copy; 2018-2020 Découverto</p>
+    </footer>
+    <script src="js/index.js"></script>
+  </div>
+</body>
+
+</html>

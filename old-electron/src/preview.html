@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang⁼ "fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Découverto: Aperçu de la carte</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link href="css/form-validation.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/ol.css" type="text/css">
+    <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Découverto</a>
+    </nav>
+    <div class="container" id="container">
+        <p><span class="text-danger">Attention:</span> la carte ne s'actualise pas, lorsque vous modifiez un point vous devez obligatoirement ouvrir une nouvelle carte pour avoir un nouvel aperçu.</p>
+        <p id="coords"></p>
+        <div id="mapdiv" class="map" style="height: 500px;width: 500px;">
+            <g class="text-danger" id="alert">Impossible de créer la carte: vérifiez que le fichier GPX est valide.</g>
+        </div>
+
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2018-2020 Découverto</p>
+    </footer>
+    <script src="js/ol.js"></script>
+    <script src="js/preview.js"></script>
+    </div>
+</body>
+
+</html>

@@ -1,3 +1,6 @@
-node_modules
-out
-src/.googlemaps
+old-electron/node_modules
+old-electron/out
+old-electron/src/.googlemaps
+new-electron/node_modules
+new-electron/out
+new-electron/src/.googlemaps
